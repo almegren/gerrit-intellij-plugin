@@ -30,7 +30,7 @@ public class UrlUtilsTest {
     public void testUrlHasSameHost() throws Exception {
         Assert.assertTrue(UrlUtils.urlHasSameHost("https://gerrit.example.com/test.git", "https://gerrit.example.com/"));
 
-        Assert.assertFalse(UrlUtils.urlHasSameHost("https://git.example.com/test.git", "https://gerrit.example.com/"));
+        Assert.assertFalse(UrlUtils.urlHasSameHost("https://git.example.com/test.git", "https://gerrit.example2.com/"));
     }
 
     @Test

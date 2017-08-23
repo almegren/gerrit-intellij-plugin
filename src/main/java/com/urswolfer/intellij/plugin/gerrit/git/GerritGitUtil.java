@@ -27,6 +27,7 @@ import com.google.gerrit.extensions.common.FetchInfo;
 import com.google.inject.Inject;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
@@ -101,6 +102,8 @@ public class GerritGitUtil {
     private GerritSettings gerritSettings;
     @Inject
     private NotificationService notificationService;
+    @Inject
+    private Logger log;
 
     public Iterable<GitRepository> getRepositories(Project project) {
         GitRepositoryManager repositoryManager = GitUtil.getRepositoryManager(project);
@@ -127,13 +130,17 @@ public class GerritGitUtil {
 
     public Optional<GitRemote> getRemoteForChange(Project project, GitRepository gitRepository, FetchInfo fetchInfo) {
         String url = fetchInfo.url;
+        log.info("Git repo info: \n" + gitRepository.toLogString());
+        log.info("Before gerrit host matching.");
         for (GitRemote remote : gitRepository.getRemotes()) {
             List<String> repositoryUrls = new ArrayList<String>();
             repositoryUrls.addAll(remote.getUrls());
             repositoryUrls.addAll(remote.getPushUrls());
             for (String repositoryUrl : repositoryUrls) {
+                log.info("Matching host from url: " + repositoryUrl + " to gerrit host.");
                 if (UrlUtils.urlHasSameHost(repositoryUrl, url)
                     || UrlUtils.urlHasSameHost(repositoryUrl, gerritSettings.getHost())) {
+                    log.info("Matched host from url: " + repositoryUrl + " to gerrit host.");
                     return Optional.of(remote);
                 }
             }

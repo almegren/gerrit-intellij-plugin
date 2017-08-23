@@ -26,8 +26,10 @@ public class UrlUtils {
     private UrlUtils() {}
 
     public static boolean urlHasSameHost(String url, String hostUrl) {
-        String host = URI.create(hostUrl).getHost();
-        String repositoryHost = UrlUtils.createUriFromGitConfigString(url).getHost();
+        String host = URI.create(hostUrl).getHost().
+            replaceFirst(".*(?=\\.[\\w-]+\\.[\\w-]+$)", "");
+        String repositoryHost = UrlUtils.createUriFromGitConfigString(url).getHost().
+            replaceFirst(".*(?=\\.[\\w-]+\\.[\\w-]+$)", "");
         return repositoryHost != null && repositoryHost.equals(host);
     }
 
